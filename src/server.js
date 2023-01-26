@@ -9,13 +9,7 @@ const app = express()
 
 mongoose.set('strictQuery', true);
 mongoose.connect(Constants.dbUrl, (error) => {
-  if (error) {
-    console.log(error);
-  }
-  else {
-
-    console.log(`Connected to MongoDB, ${Constants.dbUrl}`);
-  }
+  console.log(error ? error : `Connected to MongoDB: ${Constants.dbUrl}`);
 })
 
 app.set('views', `${__dirname}/views`);
