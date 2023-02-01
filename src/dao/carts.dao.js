@@ -53,9 +53,9 @@ class CartDao {
         {"products.$.quantity": product.quantity + 1}
       )
 
-      if (res.acknowledged)
-        return cartModel.findById(cid);
-      else return false
+      return res.acknowledged
+        ? cartModel.findById(cid)
+        : false
     }
   }
 
