@@ -6,7 +6,7 @@ class ProductDao {
   }
 
   async getProductById(id) {
-    return productModel.findById(id);
+    return await productModel.findById(id);
   }
 
   async createProduct(product) {

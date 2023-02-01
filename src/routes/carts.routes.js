@@ -1,6 +1,7 @@
 import { Router } from "express";
 import _CartDao from "../dao/carts.dao.js";
 import _ProductDao from "../dao/products.dao.js"
+import _ from "lodash";
 
 const router = Router();
 
@@ -39,17 +40,21 @@ router.post('/', async (req, res) => {
 
 router.post('/:cid/product/:pid', async (req, res) => {
   try {
+
     const { cid, pid } = req.params;
     const product = await _ProductDao.getProductById(pid)
-    console.log(product)
 
-    if(!product)
+    if(_.isEmpty(product)) {
       res.status(400).send("Bad request")
+    }
+    else {
+      const cart = await _CartDao.updateCart(cid, product.id)
 
-    const cart = await _CartDao.updateCart(cid, product.id)
-    cart
-      ? res.status(200).json(cart)
-      : res.status(400).send("Bad request")
+      cart
+        ? res.status(200).json(cart)
+        : res.status(400).send("Bad request")
+    }
+
 
   }
   catch(error) {

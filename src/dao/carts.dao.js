@@ -1,4 +1,6 @@
 import { cartModel } from "../models/carts.models.js";
+import _ from "lodash";
+import {productModel} from "../models/products.model.js";
 
 class CartDao {
   async getCarts(limit=0) {
@@ -17,12 +19,61 @@ class CartDao {
   }
 
   async updateCart(cid, pid) {
-    const cart = await cartModel.findById(cid)
-    console.log(cart.products.includes(pid))
-      // ? cart.products.find('product' === pid).update
-      // :
-      
-    return cartModel.findByIdAndUpdate(cid, {product: pid, quantity: 1}, {new: true});
+    let cart = await cartModel.findById(cid)
+    if (_.isEmpty(cart))
+      return false
+
+    const product = await productModel.findById(pid)
+    if (_.isEmpty(product))
+      return false
+
+    const hasProduct = !!cart.products.find(e => e.product_id === pid)
+
+    if(!hasProduct){
+      const newProduct = {
+        product_id: pid,
+        quantity: 1
+      }
+
+      cart.products.push(newProduct)
+
+      return cartModel.findByIdAndUpdate(cid, cart, {new: true});
+    }
+    else{
+
+      const product = cart.products.find(e => e.product_id === pid)
+      console.log('product.quantity:', product.quantity)
+
+      const res = await cartModel.updateOne(
+        {"products.product_id": pid,},
+        {"products.$.quantity": product.quantity + 1}
+      )
+
+
+
+
+      console.log('res:', res)
+
+
+      await cartModel.updateOne({})
+
+
+
+
+
+      // return cartModel.findByIdAndUpdate(cid, cart);
+    }
+
+
+
+    // console.log(cart.products)
+
+
+    return []
+
+
+
+
   }
 
   async deleteProduct(id) {
