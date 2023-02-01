@@ -16,14 +16,13 @@ router.get('/', async (req, res) => {
   }
 })
 
-router.get('/:id', async (req, res) => {
+router.get('/:cid', async (req, res) => {
   try {
-    const id = req.params.id
-    const cart = await _CartDao.getCartById(id)
+    const cid = req.params.cid
+    const cart = await _CartDao.getCartProducts(cid)
     res.status(200).json(cart)
   }
   catch(error) {
-    console.log('ERROR')
     res.json({ error: error.message })
   }
 })

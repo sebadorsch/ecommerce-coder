@@ -10,8 +10,13 @@ class CartDao {
         return cartModel.find()
   }
 
-  async getCartById(id) {
-    return cartModel.findById(id);
+  async getCartById(cid) {
+    return cartModel.findById(cid);
+  }
+
+  async getCartProducts(cid) {
+    const cart = await cartModel.findById(cid)
+    return cart.products
   }
 
   async createCart(cart) {
@@ -42,38 +47,16 @@ class CartDao {
     else{
 
       const product = cart.products.find(e => e.product_id === pid)
-      console.log('product.quantity:', product.quantity)
 
       const res = await cartModel.updateOne(
         {"products.product_id": pid,},
         {"products.$.quantity": product.quantity + 1}
       )
 
-
-
-
-      console.log('res:', res)
-
-
-      await cartModel.updateOne({})
-
-
-
-
-
-      // return cartModel.findByIdAndUpdate(cid, cart);
+      if (res.acknowledged)
+        return cartModel.findById(cid);
+      else return false
     }
-
-
-
-    // console.log(cart.products)
-
-
-    return []
-
-
-
-
   }
 
   async deleteProduct(id) {
