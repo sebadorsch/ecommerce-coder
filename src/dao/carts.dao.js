@@ -59,8 +59,12 @@ class CartDao {
     }
   }
 
-  async deleteProduct(id) {
+  async deleteProductById(id) {
     return cartModel.findByIdAndDelete(id);
+  }
+
+  async deleteProducts() {
+    return cartModel.deleteMany();
   }
 }
 

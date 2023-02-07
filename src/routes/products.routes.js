@@ -7,22 +7,41 @@ const validSort = ['asc', 'desc', 'ascending', 'descending', '1', '-1']
 
 router.get('/', async (req, res) => {
   try {
-    const limit = req.query['limit'] ? req.query['limit'] : '10'
-    const page = req.query['page'] ? req.query['page'] : '1'
+    const limit = req.query['limit'] || '10'
+    const page = req.query['page'] || '1'
     const sort = validSort.includes(req.query['sort']) ? req.query['sort'] : undefined
+
+    const query = req.query.query || undefined
 
     const params = {
       'limit': limit,
       'page': page,
       'sort': sort,
+      'query': query
     }
 
-    const products = await _ProductDao.getProducts(params)
-    res.status(200).json(products)
+    const productsResult = await _ProductDao.getProducts(params)
+
+    let response = {
+      status: 'success',
+      payload: productsResult.docs,
+    }
+
+    delete productsResult.docs
+
+    Object.assign(response, productsResult);
+
+    response['prevLink'] = response.hasPrevPage ? `${req.url}` : null
+    response['nextLink'] = response.hasNextPage ? `${req.url}` : null
+
+    console.log(res)
+    res.status(200).json(response)
   }
   catch(error) {
-    console.log('ERROR')
-    res.json({ error: error.message })
+    res.json({
+      status: 'error',
+      error: error.message
+    })
   }
 })
 
