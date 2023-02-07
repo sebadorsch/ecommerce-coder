@@ -5,7 +5,19 @@ const router = Router();
 
 router.get('/', async (req, res) => {
   try {
-    const products = await _ProductDao.getProducts()
+    const validSort = ['asc', 'desc']
+
+    const limit = req.query['limit'] ? req.query['limit'] : '10'
+    const page = req.query['page'] ? req.query['page'] : '1'
+    const sort = validSort.includes(req.query['sort']) ? req.query['sort'] : ''
+
+    const params = {
+      'limit': limit,
+      'page': page,
+      'sort': sort,
+    }
+
+    const products = await _ProductDao.getProducts(params)
     res.status(200).json(products)
   }
   catch(error) {

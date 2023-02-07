@@ -1,8 +1,18 @@
 import { productModel } from "../models/products.model.js";
 
 class ProductDao {
-  async getProducts() {
-    return productModel.find();
+  async getProducts(params) {
+    // Consultar lo de la query especifica
+
+    const {query, limit, page, sort} = params
+
+    const options = {
+      limit: limit,
+      page:page,
+      sort: { price: sort }
+    }
+
+    return await productModel.paginate({}, options)
   }
 
   async getProductById(id) {
