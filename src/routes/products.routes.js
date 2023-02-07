@@ -3,13 +3,13 @@ import _ProductDao from "../dao/products.dao.js";
 
 const router = Router();
 
+const validSort = ['asc', 'desc', 'ascending', 'descending', '1', '-1']
+
 router.get('/', async (req, res) => {
   try {
-    const validSort = ['asc', 'desc']
-
     const limit = req.query['limit'] ? req.query['limit'] : '10'
     const page = req.query['page'] ? req.query['page'] : '1'
-    const sort = validSort.includes(req.query['sort']) ? req.query['sort'] : ''
+    const sort = validSort.includes(req.query['sort']) ? req.query['sort'] : undefined
 
     const params = {
       'limit': limit,
