@@ -34,7 +34,6 @@ router.get('/', async (req, res) => {
     response['prevLink'] = response.hasPrevPage ? `${req.url}` : null
     response['nextLink'] = response.hasNextPage ? `${req.url}` : null
 
-    console.log(res)
     res.status(200).json(response)
   }
   catch(error) {
@@ -52,7 +51,6 @@ router.get('/:id', async (req, res) => {
     res.status(200).json(products)
   }
   catch(error) {
-    console.log('ERROR')
     res.json({ error: error.message })
   }
 })

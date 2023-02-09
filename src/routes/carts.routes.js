@@ -60,14 +60,18 @@ router.put('/:id', async (req, res) => {
   }
 })
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:cid', async (req, res) => {
   try {
-    const product = await _ProductDao.deleteProduct(req.params.id)
+    const product = await _CartDao.deleteCartById(req.params.cid)
     res.status(200).json(product)
   }
   catch(error) {
     res.json({ error: error.message })
   }
+})
+
+router.delete('/:cid/products', async (req, res) => {
+
 })
 
 router.delete('/:cid/products/:pid', async (req, res) => {

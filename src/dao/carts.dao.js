@@ -61,23 +61,19 @@ class CartDao {
   }
 
   async deleteProductById(cid, pid) {
-    const cart = await cartModel.findById(cid)
-    console.log("cart:", cart)
 
-    const updatedCart = await cartModel.findOneAndDelete(
-      cid,
-      { $pull: { "products.$._id": pid } }
-    )
-
-    cartModel.updateOne({ id: cid }, {
-      $pullAll: {
-        products: [{_id: pid}],
+    return cartModel.updateOne(
+      {_id: cid},
+      {
+        "$pull":
+          {"products": {_id: pid}}
       },
-    });
+      {safe: true, multi: true});
 
+  }
 
-
-    console.log("updatedCart:", updatedCart)
+  async deleteCartById(id){
+    return cartModel.findByIdAndDelete(id);
   }
 
 }
