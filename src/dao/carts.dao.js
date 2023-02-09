@@ -16,7 +16,7 @@ class CartDao {
 
   async getCartProducts(cid) {
     const cart = await cartModel.findById(cid)
-    return cart.products
+    return cart ? cart.products : false
   }
 
   async createCart(cart) {

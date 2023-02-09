@@ -3,6 +3,7 @@ import _CartDao from "../dao/carts.dao.js";
 
 const router = Router();
 
+
 router.get('/', async (req, res) => {
   try {
     const carts = await _CartDao.getCarts()
@@ -15,9 +16,11 @@ router.get('/', async (req, res) => {
 
 router.get('/:cid', async (req, res) => {
   try {
-    const cid = req.params.cid
+    const {cid} = req.params
     const cart = await _CartDao.getCartProducts(cid)
-    res.status(200).json(cart)
+    cart
+      ? res.status(200).json(cart)
+      : res.status(400).send("Bad request")
   }
   catch(error) {
     res.json({ error: error.message })
@@ -81,7 +84,9 @@ router.put('/:cid/products/:pid', async (req, res) => {
 })
 
 
-  router.delete('/:cid', async (req, res) => {
+
+
+router.delete('/:cid', async (req, res) => {
   try {
     const product = await _CartDao.deleteCartById(req.params.cid)
     res.status(200).json(product)
@@ -107,5 +112,6 @@ router.delete('/:cid/products/:pid', async (req, res) => {
     res.json({ error: error.message })
   }
 })
+
 
 export default router;
