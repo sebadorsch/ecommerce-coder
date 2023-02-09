@@ -88,8 +88,15 @@ class CartDao {
 
   }
 
-  async deleteCartById(id){
-    return cartModel.findByIdAndDelete(id);
+  async deleteCartById(cid){
+    return cartModel.findByIdAndDelete(cid);
+  }
+
+  async deleteAllProducts(cid){
+    return cartModel.findByIdAndUpdate(
+      {_id: cid},
+      {$set: {products: []}}
+    )
   }
 
 }

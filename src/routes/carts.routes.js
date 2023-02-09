@@ -112,7 +112,16 @@ router.delete('/:cid', async (req, res) => {
 })
 
 router.delete('/:cid/products', async (req, res) => {
-
+  try {
+    const {cid} = req.params
+    const cart = await _CartDao.deleteAllProducts(cid)
+    cart
+      ? res.status(200).json(cart)
+      : res.status(400).send("Bad request")
+  }
+  catch(error) {
+    res.json({ error: error.message })
+  }
 })
 
 
