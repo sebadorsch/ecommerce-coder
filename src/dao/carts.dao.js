@@ -1,6 +1,7 @@
 import {cartModel} from "../models/carts.models.js";
 import _ from "lodash";
 import {productModel} from "../models/products.model.js";
+import _ProductDao from "../dao/products.dao.js"
 
 class CartDao {
   async getCarts() {
@@ -21,7 +22,6 @@ class CartDao {
   }
 
   async updateCart(cid, pid, quantity=undefined) {
-    console.log("quantity", quantity)
     let cart = await cartModel.findById(cid)
     if (_.isEmpty(cart))
       return false
@@ -42,27 +42,38 @@ class CartDao {
 
       const product = cart.products.find(e => e.id === pid)
 
-      const res = await cartModel.findOneAndUpdate(
+      return cartModel.findOneAndUpdate(
         {
           _id: cid,
-          products: { $elemMatch: { _id: pid } }
+          products: {$elemMatch: {_id: pid}}
         },
         {
           $set: {
             "products.$.quantity": !!quantity ? quantity : product.quantity + 1
           },
         },
-        { new: true, safe: true, upsert: true })
-
-      console.log("res", res)
-      return res
+        {new: true, safe: true, upsert: true})
     }
   }
 
-  async updateCartProducts(cid, products){
+  async updateCartProducts(cid, products=undefined){
     // Debera actualizar el carrito con un arreglo de productos con el formato especificado arriba
     // Si el producto ya existe le aumento la cantidad en uno o reemplazo todos los productos que hay
     // por la nueva lista de productos?
+    if (products){
+       await products.map(async e => {
+         const product = await _ProductDao.getProductById(e.id)
+
+         if (product){
+           await this.updateCart(cid, product.id, e.quantity ? e.quantity : undefined)
+         }
+      })
+
+      // Como hago para que el return espere el resultado del mapeo anterior?
+      return cartModel.findById(cid)
+    }
+    else
+      return false
   }
 
   async deleteProductById(cid, pid) {
