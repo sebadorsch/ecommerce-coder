@@ -100,6 +100,8 @@ router.delete('/:cid/products', async (req, res) => {
 
 })
 
+
+
 router.delete('/:cid/products/:pid', async (req, res) => {
   try {
     const { cid, pid } = req.params;

@@ -1,13 +1,10 @@
-import { cartModel } from "../models/carts.models.js";
+import {cartModel} from "../models/carts.models.js";
 import _ from "lodash";
-import { productModel } from "../models/products.model.js";
+import {productModel} from "../models/products.model.js";
 
 class CartDao {
-  async getCarts(limit=0) {
-      if(limit > 0)
-        return cartModel.find().limit(limit)
-      else
-        return cartModel.find()
+  async getCarts() {
+    return cartModel.find()
   }
 
   async getCartById(cid) {
