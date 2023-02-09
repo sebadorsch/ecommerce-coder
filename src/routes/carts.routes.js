@@ -17,6 +17,19 @@ router.get('/', async (req, res) => {
 router.get('/:cid', async (req, res) => {
   try {
     const {cid} = req.params
+    const cart = await _CartDao.getCartById(cid)
+    cart
+      ? res.status(200).json(cart)
+      : res.status(400).send("Bad request")
+  }
+  catch(error) {
+    res.json({ error: error.message })
+  }
+})
+
+router.get('/:cid/products', async (req, res) => {
+  try {
+    const {cid} = req.params
     const cart = await _CartDao.getCartProducts(cid)
     cart
       ? res.status(200).json(cart)
