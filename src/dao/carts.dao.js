@@ -1,6 +1,6 @@
 import { cartModel } from "../models/carts.models.js";
 import _ from "lodash";
-import {productModel} from "../models/products.model.js";
+import { productModel } from "../models/products.model.js";
 
 class CartDao {
   async getCarts(limit=0) {
@@ -32,40 +32,54 @@ class CartDao {
     if (_.isEmpty(product))
       return false
 
-    const hasProduct = !!cart.products.find(e => e.product_id === pid)
+    const hasProduct = !!cart.products.find(e => e.id === pid)
 
     if(!hasProduct){
-      const newProduct = {
-        product_id: pid,
-        quantity: 1
-      }
 
-      cart.products.push(newProduct)
+      cart.products.push(product)
 
       return cartModel.findByIdAndUpdate(cid, cart, {new: true});
     }
     else{
 
-      const product = cart.products.find(e => e.product_id === pid)
+      const product = cart.products.find(e => e.id === pid)
 
-      const res = await cartModel.updateOne(
-        {"products.product_id": pid,},
-        {"products.$.quantity": product.quantity + 1}
-      )
+      const res = await cartModel.findOneAndUpdate(
+        {
+          _id: cid,
+          products: { $elemMatch: { _id: pid } }
+        },
+        {
+          $set: {
+            "products.$.quantity": product.quantity + 1
+          },
+        },
+        { new: true, safe: true, upsert: true })
 
-      return res.acknowledged
-        ? cartModel.findById(cid)
-        : false
+      return res ? res : false
     }
   }
 
-  async deleteProductById(id) {
-    return cartModel.findByIdAndDelete(id);
+  async deleteProductById(cid, pid) {
+    const cart = await cartModel.findById(cid)
+    console.log("cart:", cart)
+
+    const updatedCart = await cartModel.findOneAndDelete(
+      cid,
+      { $pull: { "products.$._id": pid } }
+    )
+
+    cartModel.updateOne({ id: cid }, {
+      $pullAll: {
+        products: [{_id: pid}],
+      },
+    });
+
+
+
+    console.log("updatedCart:", updatedCart)
   }
 
-  async deleteProducts() {
-    return cartModel.deleteMany();
-  }
 }
 
 export default new CartDao()
