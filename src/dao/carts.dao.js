@@ -23,7 +23,8 @@ class CartDao {
     return cartModel.create(cart);
   }
 
-  async updateCart(cid, pid) {
+  async updateCart(cid, pid, quantity=undefined) {
+    console.log("quantity", quantity)
     let cart = await cartModel.findById(cid)
     if (_.isEmpty(cart))
       return false
@@ -51,13 +52,20 @@ class CartDao {
         },
         {
           $set: {
-            "products.$.quantity": product.quantity + 1
+            "products.$.quantity": !!quantity ? quantity : product.quantity + 1
           },
         },
         { new: true, safe: true, upsert: true })
 
-      return res ? res : false
+      console.log("res", res)
+      return res
     }
+  }
+
+  async updateCartProducts(cid, products){
+    // Debera actualizar el carrito con un arreglo de productos con el formato especificado arriba
+    // Si el producto ya existe le aumento la cantidad en uno o reemplazo todos los productos que hay
+    // por la nueva lista de productos?
   }
 
   async deleteProductById(cid, pid) {
