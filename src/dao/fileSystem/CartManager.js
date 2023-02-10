@@ -73,8 +73,8 @@ class CartManager {
       fs.writeFileSync(this.path, JSON.stringify(this.carts, null, '\t'))
       return this.carts[cartIndex]
     }
-    catch (e) {
-      console.log(e)
+    catch (error) {
+      console.log(error)
     }
   }
 

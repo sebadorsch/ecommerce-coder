@@ -23,7 +23,7 @@ class ProductManager {
         : this.products = []
 
       if(this.products.find(e => e.code === product.code))
-        return 'Error: Product already exists!'
+        return 'Error: ProductCard already exists!'
 
       product["id"] = this.products.length !== 0
         ? this.products[this.products.length - 1]["id"] + 1
@@ -83,7 +83,7 @@ class ProductManager {
     else {
       let products = this.products.filter(e => e.id !== id)
       fs.writeFileSync(this.path, JSON.stringify(products, null, '\t'))
-      return "Product deleted successfully"
+      return "ProductCard deleted successfully"
     }
   }
 }

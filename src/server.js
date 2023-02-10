@@ -4,9 +4,12 @@ import mongoose from 'mongoose'
 import productsRoutes from './routes/products.routes.js'
 import cartsRoutes from './routes/carts.routes.js'
 import Constants from './Constants.js';
+import cors from 'cors'
 const PORT = Constants.port
 
 const app = express()
+
+app.use(cors())
 
 mongoose.set('strictQuery', true);
 mongoose.connect(Constants.dbUrl, (error) => {

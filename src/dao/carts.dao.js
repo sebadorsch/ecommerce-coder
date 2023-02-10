@@ -56,7 +56,7 @@ class CartDao {
     }
   }
 
-  async updateCartProducts(cid, products=undefined){
+  async updateCartProducts(cid, products=undefined) {
     // Debera actualizar el carrito con un arreglo de productos con el formato especificado arriba
     // Si el producto ya existe le aumento la cantidad en uno o reemplazo todos los productos que hay
     // por la nueva lista de productos?
@@ -88,11 +88,11 @@ class CartDao {
 
   }
 
-  async deleteCartById(cid){
+  async deleteCartById(cid) {
     return cartModel.findByIdAndDelete(cid);
   }
 
-  async deleteAllProducts(cid){
+  async deleteAllProducts(cid) {
     return cartModel.findByIdAndUpdate(
       {_id: cid},
       {$set: {products: []}}
