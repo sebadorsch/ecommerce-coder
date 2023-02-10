@@ -5,20 +5,25 @@ class ProductDao {
     // Consultar lo de la query especifica
     // const {query} = params
 
-    const {limit, page, sort} = params
+    const {limit, page, sort, category} = params
 
     const options = {
       limit: limit,
       page:page
     }
 
+    const filter = {}
+    if (category)
+      filter['category'] = category
+
     if (sort) options['sort'] = { price: sort }
 
-    return await productModel.paginate({}, options)
+    return await productModel.paginate(filter, options)
+
   }
 
   async getProductById(id) {
-    return await productModel.findById(id);
+    return productModel.findById(id);
   }
 
   async createProduct(product) {
