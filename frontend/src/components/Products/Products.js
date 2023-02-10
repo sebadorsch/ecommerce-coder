@@ -35,12 +35,13 @@ export const Products = () => {
   <>
     <div className='container container-products'>
       <div className="row">
+        <h4 className="title">
         {
           cid
             ? <h1>Cart:</h1>
             : <h1>Products:</h1>
         }
-
+        </h4>
       </div>
       <div className='row justify-content-center'>
         {products?.map((e) =>

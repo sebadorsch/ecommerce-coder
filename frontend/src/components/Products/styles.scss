@@ -5,6 +5,10 @@ body{
 .container-products{
   margin-top: 5rem;
 
+  .title{
+    color: white;
+  }
+
   .col-product{
     margin-bottom: 2rem;
 
@@ -17,6 +21,7 @@ body{
         border-bottom: 1px solid black;
         display: flex;
         align-items: center;
+        color: white;
 
         h4{
           text-transform: uppercase;
