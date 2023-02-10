@@ -13,7 +13,6 @@ class ProductDao {
     if (sort) options['sort'] = { price: sort }
 
     return await productModel.paginate(filters, options)
-
   }
 
   async getProductById(id) {
