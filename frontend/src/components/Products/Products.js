@@ -3,11 +3,22 @@ import {useEffect, useState} from "react";
 import {Constants} from "../../constants";
 import axios from 'axios';
 import ProductCard from "../ProductCard/ProductCard";
-import {useParams} from "react-router-dom";
+import {useLocation, useParams} from "react-router-dom";
 
 export const Products = () => {
-  const { apiUrl } = Constants
+  const { apiUrl, appUrl } = Constants
+
+  const location = useLocation();
+
+  const {pathname, search} = location
+
   const { cid } = useParams();
+
+  const [prevPageSearch, setPrevPageSearch] = useState('');
+  const [nextPageSearch, setNextPageSearch] = useState('');
+
+  const [hasPrevPage, setHasPrevPage] = useState(false);
+  const [hasNextPage, setHasNextPage] = useState(false);
 
   const [products, setProducts] = useState([]);
   const getProducts = async () => {
@@ -22,7 +33,14 @@ export const Products = () => {
       setProducts(productList)
     }
     else{
-      const res = await axios.get(`${apiUrl}/products`);
+      const res = await axios.get(`${apiUrl}/products${search}`);
+
+      setHasPrevPage(res.data.hasPrevPage)
+      setHasNextPage(res.data.hasNextPage)
+
+      setPrevPageSearch(search.replace(/(page=)[0-9]/, `page=${res.data.prevPage}`))
+      setNextPageSearch(search.replace(/(page=)[0-9]/, `page=${res.data.nextPage}`))
+
       setProducts(res.data.payload);
     }
   };
@@ -35,13 +53,13 @@ export const Products = () => {
   <>
     <div className='container container-products'>
       <div className="row">
-        <h4 className="title">
+        <div className="title">
         {
           cid
             ? <h1>Cart:</h1>
             : <h1>Products:</h1>
         }
-        </h4>
+        </div>
       </div>
       <div className='row justify-content-center'>
         {products?.map((e) =>
@@ -52,6 +70,20 @@ export const Products = () => {
             />
           </div>
         )}
+      </div>
+      <div className='row pages justify-content-center'>
+        {
+          hasPrevPage
+            ? <a href={`${appUrl}${pathname}${prevPageSearch}`}>Prev</a>
+            : <span>Prev</span>
+        }
+          <span> / </span>
+        {
+          hasNextPage
+            ? <a href={`${appUrl}${pathname}${nextPageSearch}`}>Next</a>
+            : <span>Next</span>
+        }
+
       </div>
     </div>
   </>
