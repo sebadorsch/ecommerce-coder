@@ -7,10 +7,16 @@ const validSort = ['asc', 'desc', 'ascending', 'descending', '1', '-1']
 
 router.get('/', async (req, res) => {
   try {
-    const limit = req.query.limit || '10'
-    const page = req.query.page || '1'
-    const sort = validSort.includes(req.query['sort']) ? req.query['sort'] : 'asc'
-    const category = req.query.category || undefined
+    const query = req.query
+
+    const limit = query.limit || '10'
+    delete query.limit
+
+    const page = query.page || '1'
+    delete query.page
+
+    const sort = validSort.includes(query['sort']) ? query['sort'] : 'asc'
+    delete query.sort
 
     const params = {
       'limit': limit,
@@ -18,10 +24,7 @@ router.get('/', async (req, res) => {
       'sort': sort,
     }
 
-    if (category)
-      params['category'] = category
-
-    const productsResult = await _ProductDao.getProducts(params)
+    const productsResult = await _ProductDao.getProducts(params, query)
 
     let response = {
       status: 'success',

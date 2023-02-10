@@ -1,24 +1,18 @@
 import { productModel } from "../models/products.model.js";
 
 class ProductDao {
-  async getProducts(params) {
-    // Consultar lo de la query especifica
-    // const {query} = params
+  async getProducts(params, filters) {
 
-    const {limit, page, sort, category} = params
+    const {limit, page, sort} = params
 
     const options = {
       limit: limit,
       page:page
     }
 
-    const filter = {}
-    if (category)
-      filter['category'] = category
-
     if (sort) options['sort'] = { price: sort }
 
-    return await productModel.paginate(filter, options)
+    return await productModel.paginate(filters, options)
 
   }
 
