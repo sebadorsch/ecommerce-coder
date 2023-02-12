@@ -1,5 +1,6 @@
 import { Router } from "express";
 import _ProductDao from "../dao/products.dao.js";
+import Constants from "../Constants.js";
 
 const router = Router();
 
@@ -35,8 +36,18 @@ router.get('/', async (req, res) => {
 
     Object.assign(response, productsResult);
 
-    response['prevLink'] = response.hasPrevPage ? `${req.url}` : null
-    response['nextLink'] = response.hasNextPage ? `${req.url}` : null
+    response['prevLink'] = null
+    if(response.hasPrevPage){
+      const prevLink = req.originalUrl.replace(/(page=)[0-9]/, `page=${response.prevPage}`)
+      response['prevLink'] = `${Constants.appUrl}${prevLink}`
+
+    }
+
+    response['nextLink']=null
+    if(response.hasNextPage){
+      const nextLink = req.originalUrl.replace(/(page=)[0-9]/, `page=${response.nextPage}`)
+      response['nextLink'] = `${Constants.appUrl}${nextLink}`
+    }
 
     res.status(200).json(response)
   }
